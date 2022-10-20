@@ -1,0 +1,20 @@
+﻿config:
+    environments:
+      localdev:
+        target: 'http://localhost:63198'
+        phases:
+        - duration: 10
+          arrivalRate: 5
+          name: Warm up
+        - duration: 20
+          arrivalRate: 5
+          rampTo: 25
+          name: Ramp up load
+        - duration: 20
+          arrivalRate: 50
+          name: Sustained load  
+scenarios:
+    - name: "Items APi"
+      flow:
+      - get:
+          url: "/api/items"

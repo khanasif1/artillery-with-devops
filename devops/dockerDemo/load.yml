@@ -1,0 +1,17 @@
+config:
+  target: https://cat-fact.herokuapp.com/
+  
+scenarios:
+- name: cat-testing
+  flow:
+  - get:
+      url: /facts     
+      capture: 
+      - strict: true    # If no match, subsequent request will fail
+        regexp: "<title>(.+?)<\/title>"
+        as: "extract_title"
+        group: 1
+        flags: g
+
+  - log: "Extracted Title: {{ extract_title }}"
+  - log: "Extracted Content Length: {{ extract_content_length }}"

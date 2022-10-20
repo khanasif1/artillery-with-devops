@@ -1,0 +1,20 @@
+config:
+    environments:
+      localdev:
+        target: 'APIGUrl'
+        phases:
+        - duration: 20
+          arrivalRate: 5
+          name: Warm up
+        - duration: 20
+          arrivalRate: 5
+          rampTo: 50
+          name: Ramp up load
+        - duration: 20
+          arrivalRate: 50
+          name: Sustained load  
+scenarios:
+    - name: "Items APIG"
+      flow:
+      - get:
+          url: "/"

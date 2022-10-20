@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "bqnLR8srMSr0/0M3SWO+WPMlemYHfmrGCpUb7VcrvWM=",
+  "Source": "AWSLambda.ArtilleryTest",
+  "BasePath": "_content/AWSLambda.ArtilleryTest",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

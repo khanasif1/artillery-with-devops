@@ -1,0 +1,22 @@
+{
+  "aggregate": {
+    "counters": {
+      "vusers.created_by_name.cat-testing": 1,
+      "vusers.created": 1,
+      "http.requests": 1,
+      "errors.ETIMEDOUT": 1,
+      "vusers.failed": 1
+    },
+    "rates": {
+      "http.request_rate": 1
+    },
+    "firstCounterAt": 1666151454568,
+    "lastCounterAt": 1666151464824,
+    "firstMetricAt": 1666151454568,
+    "lastMetricAt": 1666151464824,
+    "period": 1666151460000,
+    "summaries": {},
+    "histograms": {}
+  },
+  "intermediate": []
+}
