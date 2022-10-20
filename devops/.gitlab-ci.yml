@@ -1,0 +1,44 @@
+build-job:
+  stage: build
+  script:
+    - echo "Hello Asif, $GITLAB_USER_LOGIN! - $CI_PIPELINE_IID - $CI_PIPELINE_ID - $CI_JOB_ID - $CI_RUNNER_ID "
+    - cd api
+    - Get-Location
+    - pip install -r requirements.txt
+    - cdk --version
+    - cdk synth
+    - cdk bootstrap 
+    - cdk deploy --require-approval never
+    - aws cloudformation describe-stacks --stack-name ArtilleryLoadTestStack | jq '.Stacks | .[] | .Outputs | .[] | .OutputValue'
+
+ArtilleryLoadTest:
+  stage: test
+  script:
+    - echo "Artillery load test starts"
+    - echo "Validate Artillery load Yaml file for duration"
+    - dotnet .\_yamlvalidator\Artillery.Yaml.Validation.dll
+    - echo "Validation completed !! Start Load Test-->"
+    - Get-Location
+    - $value = $(aws cloudformation describe-stacks --stack-name ArtilleryLoadTestStack --query "Stacks[0].Outputs[0].OutputValue" --output text) 
+    - $value
+    - echo "Update URL in yaml"
+    - (Get-Content .\ArtilleryLoad.yaml) -Replace 'APIGUrl', $value | Set-Content .\ArtilleryLoad.yaml
+    - echo "Updated YAML"
+    - Get-Content .\ArtilleryLoad.yaml 
+    - $_apiUrl=$(aws cloudformation describe-stacks --stack-name ArtilleryLoadTestStack --query "Stacks[0].Outputs[0].OutputValue" --output text)
+    - $_apiUrl
+    - $reportName = $CI_PIPELINE_ID+'.html'
+    - $resultName = $CI_PIPELINE_ID+'.json'
+    - artillery run  -e localdev  .\ArtilleryLoad.yaml -o .\report\$resultName
+    - echo "Generate report from data"
+    - artillery report  -o .\report\$reportName .\report\$resultName 
+    - echo 'Report generation'
+    - Get-Location
+    - echo "Upload report to S3"
+    - aws s3 cp .\report\$reportName s3://artillery-loadtest-report/
+    - aws s3 cp .\report\$resultName  s3://artillery-loadtest-result/
+    - echo 'Generating  signed url for the report'
+    - $sign_url = aws s3 presign s3://artillery-loadtest-report/$reportName --expires-in 3600
+    - echo $sign_url
+    - echo "Send Email"
+    - aws ses send-email --from akaasif@amazon.com --to akaasif@amazon.com --text "This is for those who cannot read HTML." --html "<h1>Load test Report</h1><p>Please find report details<ul><li></p>Access Rport Online - $sign_url<p></li><li><p>S3 Loaction - s3://artillery-loadtest-report/$reportName</p></li></ul>" --subject "Artillery Report Pipeline - $CI_PIPELINE_ID"
