@@ -8,4 +8,4 @@ In this repository you will find below folders
 - ✨devops✨ focus on implementing artillery performance test using Gitlab devops
 - ✨developer✨ focus on using artillery on local dev machine with or without containers
 
-[![N|Solid](https://miro.medium.com/max/1400/devopsarch.png)](https://nodesource.com/products/nsolid)
+[![N|Solid](image/devopsarch.png)](https://nodesource.com/products/nsolid)
